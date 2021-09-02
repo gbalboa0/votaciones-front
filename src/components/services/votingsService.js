@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { getToken, getLocalEndpoint } from "./tokenService";
-const apiEndpoint = "http://" + getLocalEndpoint() + "/votacion";
+const apiEndpoint = "https://" + getLocalEndpoint() + "/votacion";
 const token = getToken();
 const qs = require("qs");
 const all = 10000;

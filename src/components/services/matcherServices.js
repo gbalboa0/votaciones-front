@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { getLocalEndpoint } from "../services/tokenService";
-const apiEndpoint = "http://" + getLocalEndpoint() + "/matcher";
+const apiEndpoint = "https://" + getLocalEndpoint() + "/matcher";
 /* function authHeaders() {
   return {
     headers: { Authorization: "Bearer " + sessionStorage.getItem("userToken") }
