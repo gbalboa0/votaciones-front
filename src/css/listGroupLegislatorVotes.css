@@ -1,0 +1,9 @@
+.list-group-leg-vote .list-group-item {
+  background-color: #f1f9fb;
+  border-left-color: #fff;
+  border-right-color: #fff;
+}
+
+.list-group-leg-vote .list-group-leg-vote:hover .list-group-leg-vote:active {
+  background-color: #c3e6cb;
+}
