@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import DeputiesDashboard from "./components/views/votings/dashboard"
 // import { renderRoutes } from 'react-router-config';
 import "./App.scss";
+const env = require('dotenv')
+
 
 const loading = () => (
   <div className="animated fadeIn pt-3 text-center">Loading...</div>
@@ -14,6 +16,7 @@ const loading = () => (
 
 class App extends Component {
   render() {
+    env.config()
     return (
       <BrowserRouter>
         <React.Suspense fallback={loading()}>

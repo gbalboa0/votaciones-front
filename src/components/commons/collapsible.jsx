@@ -10,14 +10,18 @@ import {
   Collapse,
   Row,
   TabContent,
-  TabPane
+  TabPane,
+  Input
 } from "reactstrap";
-import { Bar } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import { CustomTooltips } from "@coreui/coreui-plugin-chartjs-custom-tooltips";
+import Graph from "../views/votings/dashboard/graph";
 
 class Collapses extends Component {
   state = {
-    activeTab: 1
+    activeTab: 1,
+    bar: true,
+    filterLowVotes: 0
   };
 
   constructor(props) {
@@ -56,7 +60,6 @@ class Collapses extends Component {
     } */
 
   componentDidUpdate(previousProps, previousState) {
-    console.log("enter comp didUpdate");
     const { body } = this.props;
     if (previousProps.body !== this.props.body) {
       console.log("props", this.props);
@@ -93,6 +96,10 @@ class Collapses extends Component {
     }
   }
 
+  handleFilterChange = ({ currentTarget: input }) => {
+    this.setState({filterLowVotes: input.value})
+  };
+
   toggleAccordion(tab) {
     const prevState = this.state.accordion;
     const state = prevState.map((x, index) => (tab === index ? !x : false));
@@ -122,8 +129,12 @@ class Collapses extends Component {
         enabled: false,
         custom: CustomTooltips
       },
-      maintainAspectRatio: true
+      maintainAspectRatio: true,
+      responsive: true
     };
+    const {bar, filterLowVotes} = this.state
+  
+
     return (
       <div>
         <Row>
@@ -136,7 +147,7 @@ class Collapses extends Component {
               >
                 Positivos{" "}
                 <span className="badge badge-success pull-right">
-                  {body ? body.TotalPositiveVotes : 0}
+                  {body ? body.totalPositiveVotes : 0}
                 </span>
               </ListGroupItem>
               <ListGroupItem
@@ -146,7 +157,7 @@ class Collapses extends Component {
               >
                 Negativos{" "}
                 <span className="badge badge-danger pull-right">
-                  {body ? body.TotalNegativeVotes : 0}
+                  {body ? body.totalNegativeVotes : 0}
                 </span>
               </ListGroupItem>
               <ListGroupItem
@@ -156,7 +167,7 @@ class Collapses extends Component {
               >
                 Ausencias{" "}
                 <span className="badge badge-warning pull-right">
-                  {body ? body.TotalAbsentVotes : 0}
+                  {body ? body.totalAbsentVotes : 0}
                 </span>
               </ListGroupItem>
               <ListGroupItem
@@ -164,65 +175,69 @@ class Collapses extends Component {
                 action
                 active={this.state.activeTab === 3}
               >
-                Abstinencias{" "}
+                Abstenciones{" "}
                 <span className="badge badge-secondary pull-right">
-                  {body ? body.TotalAbstentionVotes : 0}
+                  {body ? body.totalAbstentionVotes : 0}
                 </span>
               </ListGroupItem>
             </ListGroup>
+            <div className="mt-5">
+            <Row>
+            <Col>
+              <Button color="primary" onClick= {() => this.setState({bar:!bar})}>{bar ? "Pie" : "Bar"}</Button>
+            </Col>
+            <Col lg="8">
+              <Input
+                label={'Filtrar menores a '}
+                onChange={this.handleFilterChange}
+                type={'text'}
+                placeholder='Filtrar menores a '
+                label={'Filtrar menores a '}
+              ></Input>
+            </Col>
+            </Row>
+          </div>
           </Col>
           <Col xs="8">
             <TabContent activeTab={this.state.activeTab}>
               <TabPane tabId={0}>
-                <Bar
-                  data={
-                    body
-                      ? this.getBarData(
-                          body.positiveVotesByParty,
-                          "AFIRMATIVOS"
-                        )
-                      : {}
-                  }
+                <Graph
+                  text="AFIRMATIVOS"
+                  data={body?body.positiveVotesByParty:{}}
+                  colors={body?body.colorsByParty:{}}
                   options={options}
+                  bar={bar}
+                  filterLowVotes={filterLowVotes}
                 />
               </TabPane>
               <TabPane tabId={1}>
-                <Bar
-                  data={
-                    body
-                      ? this.getBarData(
-                          body.negativeVotesByParty,
-                          "NEGATIVOS"
-                        )
-                      : {}
-                  }
+                <Graph
+                  text="NEGATIVOS"
+                  data={body?body.negativeVotesByParty:{}}
+                  colors={body?body.colorsByParty:{}}
                   options={options}
+                  bar={bar}
+                  filterLowVotes={filterLowVotes}
                 />
               </TabPane>
               <TabPane tabId={2}>
-                <Bar
-                  data={
-                    body
-                      ? this.getBarData(
-                          body.absentVotesByParty,
-                          "AUSENCIAS"
-                        )
-                      : {}
-                  }
+                <Graph
+                  text="AUSENCIAS"
+                  data={body?body.absentVotesByParty:{}}
+                  colors={body?body.colorsByParty:{}}
                   options={options}
+                  bar={bar}
+                  filterLowVotes={filterLowVotes}
                 />
               </TabPane>
               <TabPane tabId={3}>
-                <Bar
-                  data={
-                    body
-                      ? this.getBarData(
-                          body.abstentionVotesByParty,
-                          "ABSTENCIONES"
-                        )
-                      : {}
-                  }
+                <Graph
+                  text="ABSTENCIONES"
+                  data={body?body.abstentionVotesByParty:{}}
+                  colors={body?body.colorsByParty:{}}
                   options={options}
+                  bar={bar}
+                  filterLowVotes={filterLowVotes}
                 />
               </TabPane>
             </TabContent>
@@ -233,7 +248,6 @@ class Collapses extends Component {
   };
 
   getBarData = (data, voteType) => {
-    console.log("enter getBarData", data);
     const dataSet = {
       labels: Object.keys(data),
       datasets: [
@@ -250,6 +264,34 @@ class Collapses extends Component {
     };
     return dataSet;
   };
+
+  getPieData = (data, voteType) => {
+    let colors = [];
+    for (let i in data) {
+      colors.push(this.dynamicColors())
+    }
+    const dataSet = {
+      labels: Object.keys(data),
+      datasets: [
+        {
+          label: "Votos por partido",
+          backgroundColor: colors,
+          borderColor: 'rgba(200, 200, 200, 0.75)',
+          //hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+          hoverBorderColor: 'rgba(200, 200, 200, 1)',
+          data: Object.values(data)
+        }
+      ]
+    };
+    return dataSet;
+  };
+
+  dynamicColors = () => {
+    var r = Math.floor(Math.random() * 255);
+    var g = Math.floor(Math.random() * 255);
+    var b = Math.floor(Math.random() * 255);
+    return "rgb(" + r + "," + g + "," + b + ")";
+ };
 
   colorPicker = (voteType, background, hover) => {
     if (voteType === "AFIRMATIVOS" && background === true && hover === false)

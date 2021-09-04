@@ -137,7 +137,7 @@ class VotingsTable extends Component {
                   accessor: "NegativeCount"
                 },
                 {
-                  Header: "Abstinencias",
+                  Header: "Abstenciones",
                   accessor: "AbstentionCount"
                 },
                 {

@@ -1,9 +1,9 @@
 import Axios from "axios";
 import { getToken, getLocalEndpoint } from "./tokenService";
 const qs = require("qs");
-const apiEndpoint = "https://" + getLocalEndpoint() + "/voto";
+const apiEndpoint = getLocalEndpoint() + "/voto";
 const token = getToken();
-const all = 10000;
+//const all = 10000;
 
 
 export async function addLegislator(data) {
@@ -87,6 +87,35 @@ export async function requestData(
   };
 
   const url = apiEndpoint + "/search";
+  let result = await Axios.post(url, data, {
+    headers: { Authorization: token }
+  });
+  console.log("result", result);
+  return result;
+}
+
+/* export async function requestData(
+  pageSize,
+  page,
+  sorted,
+  filtered,
+  legislatorIds,
+  partyIds,
+  votacionesIds
+) {
+  //pageSize = all;
+  if (!pageSize) pageSize = 5;
+  const data = {
+    pageSize,
+    pageNumber: page,
+    sorted,
+    filtered,
+    legislatorIds,
+    partyIds,
+    votacionesIds
+  };
+
+  const url = apiEndpoint + "/search";
   let result = await Axios.get(url, {
     params: data,
     paramsSerializer: params => {
@@ -98,3 +127,4 @@ export async function requestData(
   console.log("result", result);
   return result;
 }
+ */

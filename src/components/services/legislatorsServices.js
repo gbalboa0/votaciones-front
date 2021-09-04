@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { getLocalEndpoint } from "../services/tokenService";
-const apiEndpoint = "https://" + getLocalEndpoint() + "/diputado";
+const apiEndpoint = getLocalEndpoint() + "/diputado";
 const qs = require("qs");
 
 export async function addLegislator(data) {
@@ -50,6 +50,7 @@ export async function deleteLegislator(_id) {
 }
 
 export async function requestData(pageSize, page, sorted, filtered) {
+  console.log("filtered", filtered)
   const data = {
     pageSize,
     page,

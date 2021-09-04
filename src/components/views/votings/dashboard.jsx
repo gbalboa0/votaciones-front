@@ -16,12 +16,12 @@ const columns = [
       return (
         <div>
           <img
-            alt="Not found"
+            alt=""
             height={50}
             width={50}
             src={row.original.photoUrl}
           />{" "}
-          {row.original.legislator}
+          {row.original.diputado.nombre + " " + row.original.diputado.apellido}
         </div>
       );
     },
@@ -45,7 +45,8 @@ const columns = [
         </span>
       );
     },
-    id: "Result"
+    id: "Result",
+    accessor: "resultado"
   },
   {
     Header: "Partido",
@@ -145,7 +146,7 @@ class DeputiesDashboard extends Component {
     const votingFormatedOptions = this.mapToSelectMultiple(votingsOptions);
     return (
       <React.Fragment>
-        <div>
+        {/* <div>
           <label />
           <SelectMultiple
             placeholder="Partidos"
@@ -159,7 +160,7 @@ class DeputiesDashboard extends Component {
             options={legislatorsFormatedOptions}
             //onChange={legislators => this.onLegislatorsChange(legislators)}
           />
-        </div>
+        </div> */}
         <div>
           <SelectMultiple
             placeholder="Leyes"

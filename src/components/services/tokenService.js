@@ -7,6 +7,8 @@ module.exports.getHerokuEndpoint = async => {
 };
 
 module.exports.getLocalEndpoint = async => {
+  console.log("environment variable", process.env.REACT_APP_BACKEND_ENDPOINT)
+  if(process.env.NODE_ENV === "development") return "http://localhost:8080";
   return "como-voto.herokuapp.com";
   //return "localhost:8080";
   //return "localhost:5000";

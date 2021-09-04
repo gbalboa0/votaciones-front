@@ -1,6 +1,6 @@
 import Axios from "axios";
 import { getToken, getLocalEndpoint } from "../services/tokenService";
-const apiEndpoint = "https://" + getLocalEndpoint() + "/partido";
+const apiEndpoint = getLocalEndpoint() + "/partido";
 const token = getToken();
 
 export async function addParty(data) {

@@ -96,7 +96,7 @@ class MatcherVotingRowCollapsible extends Component {
                 action
                 active={this.state.activeTab === 3}
               >
-                Abstinencias{" "}
+                Abstenciones{" "}
                 <span className="badge badge-secondary pull-right">
                   {body ? body.TotalAbstentionVotes : 0}
                 </span>
